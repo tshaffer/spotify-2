@@ -95,6 +95,19 @@ export class BaseRequest {
     }
   }
 
+  getHeaders(): any {
+    return this.headers;
+  }
+
+  getBodyParameters(): any {
+    return this.bodyParameters;
+  }
+  
+  getQueryParameters(): any {
+    return this.queryParameters;
+  }
+
+
   getQueryParameterString(): string {
     if (!isNil(this.queryParameters)) {
       return (

@@ -61,7 +61,7 @@ export class WebapiError extends NamedError {
  * Player Error 
  * { status : <integer>, message : <string>, reason : <string> }
  */
- class WebapiPlayerError extends WebapiError {
+ export class WebapiPlayerError extends WebapiError {
   constructor(body: any, headers: any, statusCode: any) {
     const message = 'An error occurred while communicating with Spotify\'s Web API.\n' +
     'Details: ' + body.error.message + (body.error.reason ? ' ' + body.error.reason + '.' : '.');
