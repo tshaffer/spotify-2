@@ -1,11 +1,11 @@
 import { isNil } from 'lodash';
 
-class Builder {
+export class Builder {
 
-  host: any;
-  port: any;
-  scheme: any;
-  path: any;
+  host: string;
+  port: number;
+  scheme: string;
+  path: string;
   queryParameters: any;
   bodyParameters: any;
   headers: any;
@@ -28,7 +28,7 @@ class Builder {
     this.host = host;
   }
 
-  setPort(port: string): void {
+  setPort(port: number): void {
     this.port = port;
   }
 
@@ -50,7 +50,7 @@ class Builder {
 
 }
 
-class BaseRequest {
+export class BaseRequest {
   host: string;
   port: number;
   scheme: string;
@@ -87,7 +87,7 @@ class BaseRequest {
   }
 
   getURL(): string {
-    var uri = this.getURI();
+    const uri = this.getURI();
     if (!isNil(this.queryParameters)) {
       return uri + this.getQueryParameterString();
     } else {
@@ -112,12 +112,12 @@ class BaseRequest {
     return '';
   }
 
-  execute(method: Function, callback: any): void | Promise<any> {
+  execute(method: (arg0: any, arg1: any) => any, callback: any): void | Promise<any> {
     if (callback) {
       method(this, callback);
       return;
     }
-    var _self = this;
+    const _self = this;
   
     return new Promise((resolve, reject) => {
       method(_self, (error: any, result: any) => {
