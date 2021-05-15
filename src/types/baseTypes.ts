@@ -8,3 +8,10 @@ export interface SpotifyApiConfiguration {
   DEFAULT_SCHEME: string;
 }
 
+export interface SpotifyCredentials {
+  redirectUri: string;
+  clientId: string;
+  clientSecret: string;
+  accessToken?: string;
+  refreshToken?: string;
+} 

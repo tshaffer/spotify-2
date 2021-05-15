@@ -72,40 +72,34 @@ class App {
       }
       const promise = this.spotifyWebApi
         .authorizationCodeGrant(code);
-      promise.then( (data: any) => {
-        debugger;
-      }).catch( (err: any) => {
+      promise.then((data: any) => {
+        const access_token = data.body.access_token;
+        const refresh_token = data.body.refresh_token;
+        const expires_in = data.body.expires_in;
+
+        this.spotifyWebApi.setAccessToken(access_token);
+        this.spotifyWebApi.setRefreshToken(refresh_token);
+
+        console.log('access_token:', access_token);
+        console.log('refresh_token:', refresh_token);
+
+        console.log(
+          `Sucessfully retreived access token. Expires in ${expires_in} s.`
+        );
+        res.send('Success! You can now c±lose the window.');
+
+        setInterval(async () => {
+          const refreshData = await this.spotifyWebApi.refreshAccessToken();
+          const accessToken = refreshData.body.access_token;
+
+          console.log('The access token has been refreshed!');
+          console.log('access_token:', accessToken);
+          this.spotifyWebApi.setAccessToken(accessToken);
+        }, expires_in / 2 * 1000);
+
+      }).catch((err: any) => {
         debugger;
       })
-        // .then(data => {
-        //   const access_token = data.body['access_token'];
-        //   const refresh_token = data.body['refresh_token'];
-        //   const expires_in = data.body['expires_in'];
-
-        //   this.spotifyWebApi.setAccessToken(access_token);
-        //   this.spotifyWebApi.setRefreshToken(refresh_token);
-
-        //   console.log('access_token:', access_token);
-        //   console.log('refresh_token:', refresh_token);
-
-        //   console.log(
-        //     `Sucessfully retreived access token. Expires in ${expires_in} s.`
-        //   );
-        //   res.send('Success! You can now close the window.');
-
-        //   setInterval(async () => {
-        //     const data = await this.spotifyWebApi.refreshAccessToken();
-        //     const access_token = data.body['access_token'];
-
-        //     console.log('The access token has been refreshed!');
-        //     console.log('access_token:', access_token);
-        //     this.spotifyWebApi.setAccessToken(access_token);
-        //   }, expires_in / 2 * 1000);
-        // })
-        // .catch(error => {
-        //   console.error('Error getting Tokens:', error);
-        //   res.send(`Error getting Tokens: ${error}`);
-        // });
     });
 
   }

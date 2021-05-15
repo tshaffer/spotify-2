@@ -3,13 +3,26 @@ import { BaseRequest } from './baseRequest';
 import { httpManagerPost } from './httpManager';
 
 import { spotifyApiConfiguration } from '../config';
+import { SpotifyCredentials } from '../types';
 
 export class SpotifyWebApi {
 
-  credentials: any;
+  credentials: SpotifyCredentials;
 
-  constructor(credentials: any) {
+  constructor(credentials: SpotifyCredentials) {
     this.credentials = credentials;
+  }
+
+  setAccessToken(accessToken: string) {
+    this.credentials.accessToken = accessToken;
+  }
+
+  setRefreshToken(refreshToken: string) {
+    this.credentials.refreshToken = refreshToken;
+  };
+
+  getRefreshToken(): string {
+    return this.credentials.refreshToken;
   }
 
   //  * Retrieve a URL where the user can give the application permissions.
@@ -54,7 +67,7 @@ export class SpotifyWebApi {
    *          refresh token, token type and time to expiration. If rejected, it contains an error object.
    *          Not returned if a callback is given.
    */
-   authorizationCodeGrant(code: string, callback?: any): any {
+  authorizationCodeGrant(code: string, callback?: any): any {
     const authenticationRequest: AuthenticationRequest = new AuthenticationRequest();
     authenticationRequest.path = '/api/token';
     authenticationRequest.bodyParameters = {
@@ -64,7 +77,7 @@ export class SpotifyWebApi {
       client_id: spotifyApiConfiguration.CLIENT_ID,
       client_secret: spotifyApiConfiguration.CLIENT_SECRET,
     };
-    authenticationRequest.headers = { 'Content-Type' : 'application/x-www-form-urlencoded' };
+    authenticationRequest.headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
     const baseRequest: BaseRequest = new BaseRequest(
       authenticationRequest.host,
@@ -79,4 +92,43 @@ export class SpotifyWebApi {
     return baseRequest.execute(httpManagerPost, callback);
 
   };
+
+  /**
+   * Refresh the access token given that it hasn't expired.
+   * Requires that client ID, client secret and refresh token has been set previous to the call.
+   * @param {requestCallback} [callback] Optional callback method to be called instead of the promise.
+   * @returns {Promise|undefined} A promise that if successful, resolves to an object containing the
+   *          access token, time to expiration and token type. If rejected, it contains an error object.
+   *          Not returned if a callback is given.
+   */
+  refreshAccessToken(callback?: any): any {
+    const authenticationRequest: AuthenticationRequest = new AuthenticationRequest();
+    authenticationRequest.path = '/api/token';
+    authenticationRequest.bodyParameters = {
+      grant_type: 'refresh_token',
+      refresh_token: this.getRefreshToken()
+    };
+    authenticationRequest.headers = {
+      Authorization:
+      'Basic ' +
+      new Buffer(
+        this.credentials.clientId + ':' + this.credentials.clientSecret
+      ).toString('base64'),
+      'Content-Type' : 'application/x-www-form-urlencoded'
+
+    };
+
+    const baseRequest: BaseRequest = new BaseRequest(
+      authenticationRequest.host,
+      authenticationRequest.port,
+      authenticationRequest.scheme,
+      undefined,
+      authenticationRequest.bodyParameters,
+      authenticationRequest.headers,
+      authenticationRequest.path,
+    );
+
+    return baseRequest.execute(httpManagerPost, callback);
+  }
+
 }
