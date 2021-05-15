@@ -15,8 +15,8 @@ class App {
 
     this.spotifyWebApi = new SpotifyWebApi({
       redirectUri: 'http://localhost:8888/callback',
-      clientId: '039a29e66a4b49508dd6de7ae97a3435',
-      clientSecret: '7e624b296e7c4a4f8b52d6e6d4531029',
+      clientId: '<client_id>',
+      clientSecret: '<client_secret>',
     })
 
     this.app = express();
