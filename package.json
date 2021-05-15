@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/server.js",
+  "engines": {
+    "node": "12.x"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "lodash": "^4.17.20",
