@@ -65,9 +65,9 @@ export class BaseRequest {
     port: number,
     scheme: string,
     queryParameters: any,
-    bodyParameters: any,
-    headers: any,
-    path: string,
+    bodyParameters?: any,
+    headers?: any,
+    path?: string,
 
   ) {
     this.host = host;

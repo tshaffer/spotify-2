@@ -1,9 +1,4 @@
-import { timeStamp } from 'console';
-import { Builder } from './baseRequest';
-
-const DEFAULT_HOST = 'accounts.spotify.com';
-const DEFAULT_PORT = 443;
-const DEFAULT_SCHEME = 'https';
+import { spotifyApiConfiguration } from '../config';
 
 export class AuthenticationRequest {
 
@@ -13,11 +8,13 @@ export class AuthenticationRequest {
 
   private _path: string;
   private _queryParameters: any;
+  private _bodyParameters: any;
+  private _headers: any;
 
   constructor() {
-    this.host = DEFAULT_HOST;
-    this.port = DEFAULT_PORT;
-    this.scheme = DEFAULT_SCHEME;
+    this.host = spotifyApiConfiguration.DEFAULT_HOST;
+    this.port = spotifyApiConfiguration.DEFAULT_PORT;
+    this.scheme = spotifyApiConfiguration.DEFAULT_SCHEME;
   }
   
   public get host(): string {
@@ -60,11 +57,28 @@ export class AuthenticationRequest {
     this._queryParameters = theQueryParameters;
   }
 
+  public get headers(): any {
+    return this._headers;
+  }
+
+  public set headers(theHeaders: any) {
+    this._headers = theHeaders;
+  }
+
+  public get bodyParameters(): any {
+    return this._bodyParameters;
+  }
+
+  public set bodyParameters(theBodyParameters: any) {
+    this._bodyParameters = theBodyParameters;
+  }
+
+
   // builder() {
   //   const newBuilder: Builder = new Builder();
-  //   newBuilder.setHost(DEFAULT_HOST);
-  //   newBuilder.setPort(DEFAULT_PORT);
-  //   newBuilder.setScheme(DEFAULT_SCHEME);
+  //   newBuilder.setHost(spotifyApiConfiguration.DEFAULT_HOST);
+  //   newBuilder.setPort(spotifyApiConfiguration.DEFAULT_PORT);
+  //   newBuilder.setScheme(spotifyApiConfiguration.DEFAULT_SCHEME);
   //   return newBuilder;
   // }
 }
