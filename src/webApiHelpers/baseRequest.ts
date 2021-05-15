@@ -13,9 +13,9 @@ export class Builder {
   constructor() {
   }
 
-  build(): BaseRequest {
-    return new BaseRequest(this);
-  }
+  // build(): BaseRequest {
+  //   return new BaseRequest(this);
+  // }
 
   // setter(key: any): any {
   //   return function(value: any) {
@@ -51,6 +51,7 @@ export class Builder {
 }
 
 export class BaseRequest {
+
   host: string;
   port: number;
   scheme: string;
@@ -59,14 +60,23 @@ export class BaseRequest {
   headers: any;
   path: string;
 
-  constructor(builder: Builder) {
-    this.host = builder.host;
-    this.port = builder.port;
-    this.scheme = builder.scheme;
-    this.queryParameters = builder.queryParameters;
-    this.bodyParameters = builder.bodyParameters;
-    this.headers = builder.headers;
-    this.path = builder.path;
+  constructor(
+    host: string,
+    port: number,
+    scheme: string,
+    queryParameters: any,
+    bodyParameters: any,
+    headers: any,
+    path: string,
+
+  ) {
+    this.host = host;
+    this.port = port;
+    this.scheme = scheme;
+    this.queryParameters = queryParameters;
+    this.bodyParameters = bodyParameters;
+    this.headers = headers;
+    this.path = path;
   }
 
   getURI(): string {
@@ -102,7 +112,7 @@ export class BaseRequest {
   getBodyParameters(): any {
     return this.bodyParameters;
   }
-  
+
   getQueryParameters(): any {
     return this.queryParameters;
   }
@@ -131,7 +141,7 @@ export class BaseRequest {
       return;
     }
     const _self = this;
-  
+
     return new Promise((resolve, reject) => {
       method(_self, (error: any, result: any) => {
         if (error) {
@@ -142,5 +152,5 @@ export class BaseRequest {
       });
     });
   };
-  
+
 }

@@ -1,4 +1,5 @@
 import { AuthenticationRequest } from './authenticationRequest';
+import { BaseRequest } from './baseRequest';
 
 const DEFAULT_REDIRECT_URI = 'http://localhost:8888/callback';
 
@@ -28,6 +29,29 @@ export class SpotifyWebApi {
       state,
       show_dialog: showDialog && !!showDialog
     }
+
+    const baseRequest: BaseRequest = new BaseRequest(
+      authenticationRequest.host,
+      authenticationRequest.port,
+      authenticationRequest.scheme,
+      authenticationRequest.queryParameters,
+      '',
+      '',
+      authenticationRequest.path,
+    );
+
+    const url: string = baseRequest.getURL();
+    console.log(url);
+    // build()
+    // create a new Request from this
+    // where this is a Builder with host, port, scheme, etc.
+    // which looks as though it just copies the properties above to a new object (Request (baseRequest))
+    // getURL()
+    // invokes getURL on Request (base request)
+    //    invokes getURI on Request
+    //      invokes getQueryParameters on Request
+    //      invokes getQueryParameterString
+
 
   }
 }
