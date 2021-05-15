@@ -18,7 +18,7 @@ import {
   WebapiPlayerError
 } from './responseError';
 
-class HttpManager {
+export class HttpManager {
 
   getParametersFromRequest(request: BaseRequest): any {
 
@@ -140,9 +140,5 @@ class HttpManager {
 
     this.makeRequest(method, options, request.getURI(), callback);
   };
-
-
-
-
 
 }
