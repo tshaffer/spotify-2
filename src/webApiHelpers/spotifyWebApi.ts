@@ -1,6 +1,6 @@
 import { AuthenticationRequest } from './authenticationRequest';
 import { BaseRequest } from './baseRequest';
-import { httpManagerPost } from './httpManager';
+import { httpManagerGet, httpManagerPost } from './httpManager';
 
 import { spotifyApiConfiguration } from '../config';
 import { SpotifyCredentials } from '../types';
@@ -15,6 +15,10 @@ export class SpotifyWebApi {
 
   setAccessToken(accessToken: string) {
     this.credentials.accessToken = accessToken;
+  }
+
+  getAccessToken(): string {
+    return this.credentials.accessToken;
   }
 
   setRefreshToken(refreshToken: string) {
@@ -110,11 +114,11 @@ export class SpotifyWebApi {
     };
     authenticationRequest.headers = {
       Authorization:
-      'Basic ' +
-      new Buffer(
-        this.credentials.clientId + ':' + this.credentials.clientSecret
-      ).toString('base64'),
-      'Content-Type' : 'application/x-www-form-urlencoded'
+        'Basic ' +
+        new Buffer(
+          this.credentials.clientId + ':' + this.credentials.clientSecret
+        ).toString('base64'),
+      'Content-Type': 'application/x-www-form-urlencoded'
 
     };
 
@@ -131,4 +135,19 @@ export class SpotifyWebApi {
     return baseRequest.execute(httpManagerPost, callback);
   }
 
+  getMe(accessToken: string): any {
+
+    const baseRequest: BaseRequest = new BaseRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      undefined,
+      undefined,
+      { Authorization: 'Bearer ' + accessToken },
+      '/v1/me'
+    );
+
+    return baseRequest.execute(httpManagerGet, undefined);
+
+  }
 }

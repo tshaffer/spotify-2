@@ -102,6 +102,17 @@ class App {
       })
     });
 
+    this.app.get('/getMe', (req, res) => {
+      const accessToken = this.spotifyWebApi.getAccessToken();
+      const promise = this.spotifyWebApi.getMe(accessToken);
+      promise
+        .then( (data: any) => {
+          console.log(data);
+        })
+        .catch( (err: Error) => {
+          console.log(err);
+        });
+    })
   }
 
   private config(): void {
