@@ -59,6 +59,11 @@ class App {
       res.redirect(authorizationUrl);
     });
 
+    this.app.get('/', (req, res) => {
+      const authorizationUrl: string = this.spotifyWebApi.createAuthorizeURL(scopes);
+      res.redirect(authorizationUrl);
+    });
+
     this.app.get('/callback', (req, res) => {
 
       const error = req.query.error;
