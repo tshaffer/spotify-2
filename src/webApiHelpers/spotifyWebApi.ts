@@ -3,7 +3,11 @@ import { httpManagerGet, httpManagerPost } from './httpManager';
 
 import { spotifyApiConfiguration } from '../config';
 import { SpotifyCredentials, SpotifyWebRequest } from '../types';
-import { swrCreateSpotifyWebRequest, swrExecute, swrGetURL } from './spotifyWebRequest';
+import {
+  swrCreateSpotifyWebRequest,
+  swrExecute,
+  swrGetURL
+} from './spotifyWebRequest';
 
 export class SpotifyWebApi {
 
@@ -55,7 +59,7 @@ export class SpotifyWebApi {
       authenticationRequest.path,
       undefined,
       authenticationRequest.queryParameters,
-      undefined,    
+      undefined,
     );
 
     const url: string = swrGetURL(spotifyWebRequest);

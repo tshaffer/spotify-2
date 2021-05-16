@@ -72,13 +72,4 @@ export class AuthenticationRequest {
   public set bodyParameters(theBodyParameters: any) {
     this._bodyParameters = theBodyParameters;
   }
-
-
-  // builder() {
-  //   const newBuilder: Builder = new Builder();
-  //   newBuilder.setHost(spotifyApiConfiguration.DEFAULT_HOST);
-  //   newBuilder.setPort(spotifyApiConfiguration.DEFAULT_PORT);
-  //   newBuilder.setScheme(spotifyApiConfiguration.DEFAULT_SCHEME);
-  //   return newBuilder;
-  // }
 }
