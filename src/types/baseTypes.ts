@@ -15,3 +15,13 @@ export interface SpotifyCredentials {
   accessToken?: string;
   refreshToken?: string;
 } 
+
+export interface SpotifyWebRequest {
+  host: string;
+  port: number;
+  scheme: string;
+  path: string;
+  headers: any;
+  queryParameters: any;
+  bodyParameters: any;
+}

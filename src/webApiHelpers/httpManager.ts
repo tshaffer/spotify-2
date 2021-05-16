@@ -1,6 +1,7 @@
+import { isNil } from 'lodash';
 import superagent from 'superagent';
 
-import { BaseRequest } from './baseRequest';
+import { SpotifyWebRequest } from '../types';
 
 import {
   TimeoutError,
@@ -9,24 +10,30 @@ import {
   WebapiAuthenticationError,
   WebapiPlayerError
 } from './responseError';
+import { 
+  swrGetBodyParameters,
+  swrGetHeaders,
+  swrGetQueryParameters,
+  swrGetURI,
+ } from './spotifyWebRequest';
 
 
-export const httpManagerGetParametersFromRequest = (request: BaseRequest): any => {
+export const httpManagerGetParametersFromRequest = (request: SpotifyWebRequest): any => {
 
   const options: any = {};
 
-  if (request.getQueryParameters()) {
-    options.query = request.getQueryParameters();
+  if (!isNil(swrGetQueryParameters(request))) {
+    options.query = swrGetQueryParameters(request);
   }
 
-  if (request.getHeaders() && request.getHeaders()['Content-Type'] === 'application/json') {
-    options.data = JSON.stringify(request.getBodyParameters());
-  } else if (request.getBodyParameters()) {
-    options.data = request.getBodyParameters();
+  if (!isNil(swrGetHeaders(request)) && swrGetHeaders(request) === "['Content-Type'] === 'application/json'") {
+    options.data = JSON.stringify(swrGetBodyParameters(request));
+  } else if (swrGetBodyParameters(request)) {
+    options.data = swrGetBodyParameters(request);
   }
 
-  if (request.getHeaders()) {
-    options.headers = request.getHeaders();
+  if (swrGetHeaders(request)) {
+    options.headers = swrGetHeaders(request);
   }
   return options;
 };
@@ -89,11 +96,11 @@ export const httpManagerMakeRequest = (method: any, options: any, uri: any, call
  * @param {BaseRequest} The request.
  * @param {Function} The callback function.
  */
-export const httpManagerGet = (request: any, callback: any) => {
+export const httpManagerGet = (request: SpotifyWebRequest, callback: any) => {
   const options = httpManagerGetParametersFromRequest(request);
   const method = superagent.get;
 
-  httpManagerMakeRequest(method, options, request.getURI(), callback);
+  httpManagerMakeRequest(method, options, swrGetURI(request), callback);
 };
 
 /**
@@ -101,11 +108,11 @@ export const httpManagerGet = (request: any, callback: any) => {
  * @param {BaseRequest} The request.
  * @param {Function} The callback function.
  */
-export const httpManagerPost = (request: any, callback: any) => {
+export const httpManagerPost = (request: SpotifyWebRequest, callback: any) => {
   const options = httpManagerGetParametersFromRequest(request);
   const method = superagent.post;
 
-  httpManagerMakeRequest(method, options, request.getURI(), callback);
+  httpManagerMakeRequest(method, options, swrGetURI(request), callback);
 }
 
 /*
@@ -113,11 +120,11 @@ export const httpManagerPost = (request: any, callback: any) => {
   @param {BaseRequest} The request.
   @param {Function} The callback function.
 */
-export const httpManagerDelete = (request: any, callback: any) => {
+export const httpManagerDelete = (request: SpotifyWebRequest, callback: any) => {
   const options = httpManagerGetParametersFromRequest(request);
   const method = superagent.del;
 
-  httpManagerMakeRequest(method, options, request.getURI(), callback);
+  httpManagerMakeRequest(method, options, swrGetURI(request), callback);
 };
 
 /**
@@ -125,9 +132,9 @@ export const httpManagerDelete = (request: any, callback: any) => {
  * @param {BaseRequest} The request.
  * @param {Function} The callback function.
  */
-export const httpManagerPut = (request: any, callback: any) => {
+export const httpManagerPut = (request: SpotifyWebRequest, callback: any) => {
   const options = httpManagerGetParametersFromRequest(request);
   const method = superagent.put;
 
-  httpManagerMakeRequest(method, options, request.getURI(), callback);
+  httpManagerMakeRequest(method, options, swrGetURI(request), callback);
 };

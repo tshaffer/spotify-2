@@ -1,9 +1,9 @@
 import { AuthenticationRequest } from './authenticationRequest';
-import { BaseRequest } from './baseRequest';
 import { httpManagerGet, httpManagerPost } from './httpManager';
 
 import { spotifyApiConfiguration } from '../config';
-import { SpotifyCredentials } from '../types';
+import { SpotifyCredentials, SpotifyWebRequest } from '../types';
+import { swrCreateSpotifyWebRequest, swrExecute, swrGetURL } from './spotifyWebRequest';
 
 export class SpotifyWebApi {
 
@@ -48,17 +48,17 @@ export class SpotifyWebApi {
       show_dialog: showDialog && !!showDialog
     }
 
-    const baseRequest: BaseRequest = new BaseRequest(
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       authenticationRequest.host,
       authenticationRequest.port,
       authenticationRequest.scheme,
-      authenticationRequest.queryParameters,
-      undefined,
-      undefined,
       authenticationRequest.path,
+      undefined,
+      authenticationRequest.queryParameters,
+      undefined,    
     );
 
-    const url: string = baseRequest.getURL();
+    const url: string = swrGetURL(spotifyWebRequest);
     return url;
   }
 
@@ -83,18 +83,17 @@ export class SpotifyWebApi {
     };
     authenticationRequest.headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
 
-    const baseRequest: BaseRequest = new BaseRequest(
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       authenticationRequest.host,
       authenticationRequest.port,
       authenticationRequest.scheme,
+      authenticationRequest.path,
+      authenticationRequest.headers,
       undefined,
       authenticationRequest.bodyParameters,
-      authenticationRequest.headers,
-      authenticationRequest.path,
     );
 
-    return baseRequest.execute(httpManagerPost, callback);
-
+    return swrExecute(spotifyWebRequest, httpManagerPost, callback);
   };
 
   /**
@@ -122,32 +121,31 @@ export class SpotifyWebApi {
 
     };
 
-    const baseRequest: BaseRequest = new BaseRequest(
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       authenticationRequest.host,
       authenticationRequest.port,
       authenticationRequest.scheme,
+      authenticationRequest.path,
+      authenticationRequest.headers,
       undefined,
       authenticationRequest.bodyParameters,
-      authenticationRequest.headers,
-      authenticationRequest.path,
     );
 
-    return baseRequest.execute(httpManagerPost, callback);
+    return swrExecute(spotifyWebRequest, httpManagerPost, callback);
   }
 
   getMe(accessToken: string): any {
 
-    const baseRequest: BaseRequest = new BaseRequest(
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
       spotifyApiConfiguration.DEFAULT_PORT,
       spotifyApiConfiguration.DEFAULT_SCHEME,
-      undefined,
-      undefined,
+      '/v1/me',
       { Authorization: 'Bearer ' + accessToken },
-      '/v1/me'
+      undefined,
+      undefined,
     );
 
-    return baseRequest.execute(httpManagerGet, undefined);
-
+    return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
   }
 }
