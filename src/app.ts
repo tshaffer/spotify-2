@@ -1,44 +1,24 @@
-import { isNil, isString } from 'lodash';
-
 import express from 'express';
 import { readConfig } from './config';
 import { spotifyApiConfiguration } from './config';
 
 import { SpotifyWebApi } from './webApiHelpers';
 
-const scopes = [
-  'ugc-image-upload',
-  'user-read-playback-state',
-  'user-modify-playback-state',
-  'user-read-currently-playing',
-  'streaming',
-  'app-remote-control',
-  'user-read-email',
-  'user-read-private',
-  'playlist-read-collaborative',
-  'playlist-modify-public',
-  'playlist-read-private',
-  'playlist-modify-private',
-  'user-library-modify',
-  'user-library-read',
-  'user-top-read',
-  'user-read-playback-position',
-  'user-read-recently-played',
-  'user-follow-read',
-  'user-follow-modify'
-];
+import { Routes } from './routes/routes';
+import spotifyApiRouter from './routes/spotifyApi';
 
+export let spotifyWebApi: SpotifyWebApi;
 
 class App {
 
   public app: express.Application;
-  spotifyWebApi: SpotifyWebApi;
+  public route: Routes = new Routes();
 
   constructor() {
 
     readConfig('/Users/tedshaffer/Documents/Projects/spotify-2/src/config/config.env');
 
-    this.spotifyWebApi = new SpotifyWebApi({
+    spotifyWebApi = new SpotifyWebApi({
       redirectUri: spotifyApiConfiguration.DEFAULT_REDIRECT_URI,
       clientId: spotifyApiConfiguration.CLIENT_ID,
       clientSecret: spotifyApiConfiguration.CLIENT_SECRET,
@@ -51,73 +31,11 @@ class App {
       limit: '100mb',
     }));
 
+    this.route.routes(this.app);
+    this.app.use('/api/v1', spotifyApiRouter);
+
     console.log('__dirname');
     console.log(__dirname);
-
-    this.app.get('/login', (req, res) => {
-      const authorizationUrl: string = this.spotifyWebApi.createAuthorizeURL(scopes);
-      res.redirect(authorizationUrl);
-    });
-
-    this.app.get('/', (req, res) => {
-      const authorizationUrl: string = this.spotifyWebApi.createAuthorizeURL(scopes);
-      res.redirect(authorizationUrl);
-    });
-
-    this.app.get('/callback', (req, res) => {
-
-      const error = req.query.error;
-      const code: string = req.query.code as string;
-      const state = req.query.state;
-
-      if (error) {
-        console.error('Callback Error:', error);
-        res.send(`Callback Error: ${error}`);
-        return;
-      }
-      const promise = this.spotifyWebApi
-        .authorizationCodeGrant(code);
-      promise.then((data: any) => {
-        const access_token = data.body.access_token;
-        const refresh_token = data.body.refresh_token;
-        const expires_in = data.body.expires_in;
-
-        this.spotifyWebApi.setAccessToken(access_token);
-        this.spotifyWebApi.setRefreshToken(refresh_token);
-
-        console.log('access_token:', access_token);
-        console.log('refresh_token:', refresh_token);
-
-        console.log(
-          `Sucessfully retreived access token. Expires in ${expires_in} s.`
-        );
-        res.send('Success! You can now c±lose the window.');
-
-        setInterval(async () => {
-          const refreshData = await this.spotifyWebApi.refreshAccessToken();
-          const accessToken = refreshData.body.access_token;
-
-          console.log('The access token has been refreshed!');
-          console.log('access_token:', accessToken);
-          this.spotifyWebApi.setAccessToken(accessToken);
-        }, expires_in / 2 * 1000);
-
-      }).catch((err: any) => {
-        debugger;
-      })
-    });
-
-    this.app.get('/getMe', (req, res) => {
-      const accessToken = this.spotifyWebApi.getAccessToken();
-      const promise = this.spotifyWebApi.getMe(accessToken);
-      promise
-        .then( (data: any) => {
-          console.log(data);
-        })
-        .catch( (err: Error) => {
-          console.log(err);
-        });
-    })
   }
 
   private config(): void {
