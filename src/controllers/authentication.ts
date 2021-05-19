@@ -26,11 +26,13 @@ const scopes = [
 ];
 
 export function authenticateUser(request: Request, response: Response) {
+  console.log('authenticateUser');
   const authorizationUrl: string = spotifyWebApi.createAuthorizeURL(scopes);
   response.redirect(authorizationUrl);
 }
 
 export function authenticateCallbackHandler(request: Request, response: Response) {
+  console.log('authenticateCallbackHandler');
   const error = request.query.error;
   const code: string = request.query.code as string;
   const state = request.query.state;
@@ -44,6 +46,8 @@ export function authenticateCallbackHandler(request: Request, response: Response
     .authorizationCodeGrant(code);
   promise.then((data: any) => {
     const access_token = data.body.access_token;
+    console.log('access_token');
+    console.log(access_token);
     const refresh_token = data.body.refresh_token;
     const expires_in = data.body.expires_in;
 
