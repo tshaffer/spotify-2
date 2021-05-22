@@ -121,3 +121,22 @@ export function pausePlayback(request: Request, response: Response) {
     });
 
 }
+
+export function skipToNextTrack(request: Request, response: Response) {
+
+  console.log('skipToNextTrack invoked');
+
+  const accessToken = spotifyWebApi.getAccessToken();
+  const promise = spotifyWebApi.skipToNextTrack(accessToken);
+  promise
+    .then((result: any) => {
+      console.log('skipToNextTrack');
+      console.log(result);
+      response.sendStatus(200);
+    })
+    .catch((err: Error) => {
+      console.log(err);
+      throw new Error(err.toString());
+    });
+
+}

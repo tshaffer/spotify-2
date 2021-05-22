@@ -229,4 +229,21 @@ export class SpotifyWebApi {
 
     return swrExecute(spotifyWebRequest, httpManagerPut, undefined);
   }
+
+  skipToNextTrack(accessToken: string): any {
+
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/me/player/next',
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      undefined,
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerPost, undefined);
+  }
+
 }
+
