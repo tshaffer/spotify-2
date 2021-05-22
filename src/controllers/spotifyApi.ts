@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import { isNil } from 'lodash';
+import { SpotifyPlaylists } from 'spotifyApi';
 
 // TEDTODO - really ugly
 import { spotifyWebApi } from '../app';
@@ -27,11 +29,18 @@ export function getMyPlaylists(request: Request, response: Response) {
   const promise = spotifyWebApi.getMyPlaylists(accessToken);
   promise
     .then((data: any) => {
-      console.log(data.body);
-      response.json(data.body);
+      if (!isNil(data.body)) {
+        const spotifyPlaylists: SpotifyPlaylists = data.body as SpotifyPlaylists;
+        console.log('spotifyPlaylists');
+        console.log(spotifyPlaylists);
+        return response.json(spotifyPlaylists);
+      } else {
+        throw new Error('data.body is null');
+      }
     })
     .catch((err: Error) => {
       console.log(err);
+      throw new Error(err.toString());
     });
 }
 

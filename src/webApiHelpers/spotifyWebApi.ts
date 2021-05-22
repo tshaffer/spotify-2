@@ -153,6 +153,7 @@ export class SpotifyWebApi {
     return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
   }
 
+  // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-a-list-of-current-users-playlists
   getMyPlaylists(accessToken: string): any {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
