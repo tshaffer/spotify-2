@@ -1,5 +1,5 @@
 import { AuthenticationRequest } from './authenticationRequest';
-import { httpManagerGet, httpManagerPost } from './httpManager';
+import { httpManagerGet, httpManagerPost, httpManagerPut } from './httpManager';
 
 import { spotifyApiConfiguration } from '../config';
 import { SpotifyCredentials, SpotifyWebRequest } from '../types';
@@ -185,5 +185,48 @@ export class SpotifyWebApi {
     return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
   }
 
+  getPlaybackState(accessToken: string): any {
 
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/me/player',
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      undefined,
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
+  }
+
+  startPlayback(accessToken: string): any {
+
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/me/player/play',
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      undefined,
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerPut, undefined);
+  }
+
+  pausePlayback(accessToken: string): any {
+
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/me/player/pause',
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      undefined,
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerPut, undefined);
+  }
 }
