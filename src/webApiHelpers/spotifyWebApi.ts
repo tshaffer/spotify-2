@@ -152,4 +152,37 @@ export class SpotifyWebApi {
 
     return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
   }
+
+  getMyPlaylists(accessToken: string): any {
+
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/me/playlists',
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      undefined,
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
+  }
+
+  // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-playlists-tracks
+  getPlaylistTracks(accessToken: string, playlistId: string): any {
+
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/playlists/' + playlistId + '/tracks',
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      undefined,
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
+  }
+
+
 }

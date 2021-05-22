@@ -1,4 +1,6 @@
 import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { readConfig } from './config';
 import { spotifyApiConfiguration } from './config';
 
@@ -27,9 +29,13 @@ class App {
     this.app = express();
     this.config();
 
-    this.app.use(express.json({
-      limit: '100mb',
-    }));
+    this.app.use(express.static(__dirname + '/public'))
+    .use(cors())
+    .use(cookieParser());
+
+    // this.app
+    //   .use(express.json({limit: '100mb'}))
+    //   .use(cors());
 
     this.route.routes(this.app);
     this.app.use('/api/v1', spotifyApiRouter);
