@@ -75,7 +75,7 @@ export class SpotifyWebApi {
    *          refresh token, token type and time to expiration. If rejected, it contains an error object.
    *          Not returned if a callback is given.
    */
-  authorizationCodeGrant(code: string, callback?: any): any {
+  authorizationCodeGrant(code: string): Promise<any> {
     const authenticationRequest: AuthenticationRequest = new AuthenticationRequest();
     authenticationRequest.path = '/api/token';
     authenticationRequest.bodyParameters = {
@@ -97,7 +97,7 @@ export class SpotifyWebApi {
       authenticationRequest.bodyParameters,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerPost, callback);
+    return swrExecute(spotifyWebRequest, httpManagerPost);
   };
 
   /**
@@ -108,7 +108,7 @@ export class SpotifyWebApi {
    *          access token, time to expiration and token type. If rejected, it contains an error object.
    *          Not returned if a callback is given.
    */
-  refreshAccessToken(callback?: any): any {
+  refreshAccessToken(callback?: any): Promise<any> {
     const authenticationRequest: AuthenticationRequest = new AuthenticationRequest();
     authenticationRequest.path = '/api/token';
     authenticationRequest.bodyParameters = {
@@ -135,10 +135,10 @@ export class SpotifyWebApi {
       authenticationRequest.bodyParameters,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerPost, callback);
+    return swrExecute(spotifyWebRequest, httpManagerPost);
   }
 
-  getMe(accessToken: string): any {
+  getMe(accessToken: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -150,11 +150,11 @@ export class SpotifyWebApi {
       undefined,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
+    return swrExecute(spotifyWebRequest, httpManagerGet);
   }
 
   // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-a-list-of-current-users-playlists
-  getMyPlaylists(accessToken: string): any {
+  getMyPlaylists(accessToken: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -166,26 +166,26 @@ export class SpotifyWebApi {
       undefined,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
+    return swrExecute(spotifyWebRequest, httpManagerGet);
   }
 
   // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-playlists-tracks
-  getPlaylistTracks(accessToken: string, playlistId: string): any {
+  getPlaylistTracks(accessToken: string, playlistId: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
       spotifyApiConfiguration.DEFAULT_PORT,
       spotifyApiConfiguration.DEFAULT_SCHEME,
-      '/v1/playlists/' + playlistId + '/tracks',
+      '/v1/playlists/' + playlistId + '/tracks?market=US',
       { Authorization: 'Bearer ' + accessToken },
       undefined,
       undefined,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
+    return swrExecute(spotifyWebRequest, httpManagerGet);
   }
 
-  getPlaybackState(accessToken: string): any {
+  getPlaybackState(accessToken: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -197,10 +197,10 @@ export class SpotifyWebApi {
       undefined,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerGet, undefined);
+    return swrExecute(spotifyWebRequest, httpManagerGet);
   }
 
-  startPlayback(accessToken: string): any {
+  startPlayback(accessToken: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -212,10 +212,10 @@ export class SpotifyWebApi {
       undefined,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerPut, undefined);
+    return swrExecute(spotifyWebRequest, httpManagerPut);
   }
 
-  pausePlayback(accessToken: string): any {
+  pausePlayback(accessToken: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -227,10 +227,10 @@ export class SpotifyWebApi {
       undefined,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerPut, undefined);
+    return swrExecute(spotifyWebRequest, httpManagerPut);
   }
 
-  skipToNextTrack(accessToken: string): any {
+  skipToNextTrack(accessToken: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -242,8 +242,22 @@ export class SpotifyWebApi {
       undefined,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerPost, undefined);
+    return swrExecute(spotifyWebRequest, httpManagerPost);
   }
 
+  addItemToQueue(accessToken: string, uri: string, deviceId: string): Promise<any> {
+
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/me/player/queue?uri=' + uri + '&device_id=' + deviceId,
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      undefined,
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerPost);
+  }
 }
 

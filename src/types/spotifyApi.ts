@@ -1,7 +1,6 @@
 // https://developer.spotify.com/documentation/web-api/reference/#object-pagingobject
 export interface SpotifyPagingObject {
   href: string;
-  items: SpotifyPlaylist[];
   limit: number;
   next: string;
   offset: number;
@@ -11,6 +10,10 @@ export interface SpotifyPagingObject {
 
 export interface SpotifyPlaylists extends SpotifyPagingObject {
   items: SpotifyPlaylist[];
+}
+
+export interface SpotifyPlaylistItems extends SpotifyPagingObject {
+  items: SpotifyPlaylistTrackObject[];
 }
 
 // https://developer.spotify.com/documentation/web-api/reference/#object-simplifiedplaylistobject
@@ -95,21 +98,55 @@ export interface SpotifyPlaybackContext {
   uri: string;
 }
 
+export interface SpotifyPlaylistTrackObject {
+  added_at: any; // Timestamp
+  added_by: any; // PublicUserObject
+  is_local: boolean;
+  primary_color?: any;
+  track: SpotifyTrackObject;
+  video_thumbnail?: any;
+}
+
+export interface SpotifySimplifiedTrackObject {
+  artists: SpotifyArtist[];
+  available_markets: string[];
+  disc_number: number;
+  duration_ms: number;
+  explicit: boolean;
+  external_urls: SpotifyExternalUrlObject;
+  href: string;
+  id: string;
+  is_local: boolean;
+  is_playable: boolean;
+  linked_from: any; // LinkedTrackObject
+  name: string;
+  preview_url: string;
+  restrictions: any; // TrackRestrictionObject
+  track_number: number;
+  type: string;
+  uri: string;
+}
+
 export interface SpotifyTrackObject {
   album: SpotifyAlbum;
   artists: SpotifyArtist[];
   available_markets: string[];
   disc_number: number;
   duration_ms: number;
+  episode?: boolean;
   explicit: boolean;
   external_ids: any;  // TEDTODO - ??
   external_urls: SpotifyExternalUrlObject;
   href: string;
   id: string;
   is_local: boolean;
+  is_playable: boolean;
+  linked_from: any; // ??
   name: string;
   popularity: number;
   preview_url: string;
+  restrictions: any; // TrackRestrictionObject
+  track?: boolean;
   track_number: number;
   type: string;
   uri: string;

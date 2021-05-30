@@ -87,12 +87,7 @@ export const swrGetQueryParameterString = (spotifyWebRequest: SpotifyWebRequest)
   return '';
 }
 
-export const swrExecute = (spotifyWebRequest: SpotifyWebRequest, method: (arg0: any, arg1: any) => any, callback: any): void | Promise<any> => {
-  if (callback) {
-    method(this, callback);
-    return;
-  }
-
+export const swrExecute = (spotifyWebRequest: SpotifyWebRequest, method: (arg0: any, arg1: any) => any): Promise<any> => {
   return new Promise((resolve, reject) => {
     method(spotifyWebRequest, (error: any, result: any) => {
       if (error) {

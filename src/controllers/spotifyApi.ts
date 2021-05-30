@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { isNil } from 'lodash';
-import { SpotifyPlaylists } from 'spotifyApi';
+import { SpotifyPlaylistItems, SpotifyPlaylists, SpotifyPlaylistTrackObject, SpotifyPlaybackState } from 'spotifyApi';
 
 // TEDTODO - really ugly
 import { spotifyWebApi } from '../app';
@@ -62,7 +62,83 @@ export function getPlaylistTracks(request: Request, response: Response) {
     });
 }
 
-export function getPlaybackState(request: Request, response: Response) {
+function addItemToQueue(uri: string) {
+
+  console.log('addItemToQueue invoked');
+
+}
+
+export function addPlaylistTracksToQueue(request: Request, response: Response) {
+
+  console.log('addPlaylistTracksToQueue invoked');
+
+  const { playlistId } = request.params;
+
+  const accessToken = spotifyWebApi.getAccessToken();
+
+  const getPlaylistTracksPromise: Promise<any> = spotifyWebApi.getPlaylistTracks(accessToken, playlistId);
+  getPlaylistTracksPromise
+    .then((playlistTrackData: any) => {
+      console.log('playlistTrackData');
+      console.log(playlistTrackData);
+      const playbackStatePromise = spotifyWebApi.getPlaybackState(accessToken);
+      playbackStatePromise
+        .then((playbackStateData: any) => {
+          console.log('playbackStateData');
+          console.log(playbackStateData);
+          response.status(200);
+        })
+    })
+    .catch((err: Error) => {
+      console.log(err);
+      debugger;
+    });
+
+  // let deviceId: string = '';
+  // let spotifyPlaylistItems: SpotifyPlaylistItems;
+
+  // const playbackStatePromise = spotifyWebApi.getPlaybackState(accessToken);
+  // playbackStatePromise
+  //   .then((data: any) => {
+  //     console.log(data.body);
+  //     const spotifyPlaybackState: SpotifyPlaybackState = data.body as SpotifyPlaybackState;
+  //     deviceId = spotifyPlaybackState.device.id;
+  //     // http://localhost:8888/api/v1/getPlaylistTracks/37i9dQZF1DX6bJVMtDYJHx
+  //     spotifyWebApi.getPlaylistTracks(accessToken, playlistId)
+  //   }).then((data: any) => {
+  //     console.log(data);
+  //     // spotifyPlaylistItems = data.body as SpotifyPlaylistItems;
+  //     // debugger;
+  //     response.status(200);
+  //   })
+  //   .catch((err: Error) => {
+  //     console.log(err);
+  //     debugger;
+  //   })
+
+  // const promise = spotifyWebApi.getPlaylistTracks(accessToken, playlistId);
+  // promise
+  // .then((data: any) => {
+  //   console.log(data.body);
+  //   const spotifyPlaylistItems: SpotifyPlaylistItems = data.body as SpotifyPlaylistItems;
+
+  //   // add each item in the playlist to the queue
+  //   const items: SpotifyPlaylistTrackObject[] = spotifyPlaylistItems.items;
+  //   for (const spotifyPlaylistTrack of items) {
+
+  //   }
+
+  //   debugger;
+  //   // response.json(data.body);
+  // })
+  // .catch((err: Error) => {
+  //   console.log(err);
+  // });
+
+}
+
+
+export function getPlaybackState(request: Request, response: Response): void {
 
   console.log('getPlaybackState invoked');
 
