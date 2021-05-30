@@ -62,17 +62,14 @@ export function getPlaylistTracks(request: Request, response: Response) {
     });
 }
 
-function addItemToQueue(uri: string) {
-
-  console.log('addItemToQueue invoked');
-
-}
-
-export function addPlaylistTracksToQueue(request: Request, response: Response) {
+export function   (request: Request, response: Response) {
 
   console.log('addPlaylistTracksToQueue invoked');
 
-  const { playlistId } = request.params;
+  const { playlistId, contextUri } = request.params;
+
+  console.log('contextUri');
+  console.log(contextUri);
 
   const accessToken = spotifyWebApi.getAccessToken();
 
@@ -91,29 +88,37 @@ export function addPlaylistTracksToQueue(request: Request, response: Response) {
       console.log(playbackStateData);
       spotifyPlaybackState = playbackStateData.body;
 
-      const spotifyPlaylistTracks: SpotifyPlaylistTrackObject[] = spotifyPlaylistItems.items;
-      
-      // add items to the queue - don't wait for responses
-      const addItemPromises: Promise<any>[]= [];
+      console.log('Device Id:');
+      console.log(spotifyPlaybackState.device.id);
 
-      console.log('add tracks to queue');
-      for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
-        addItemPromises.push(spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id));
-      }
-      console.log('track adds complete');
-      Promise.all(addItemPromises)
-        .then( (data: any) => {
-          console.log('track adds promises fulfilled');
-          console.log(data);
-          return response.json(data);
-        });
+      return spotifyWebApi.startPlayback(accessToken, spotifyPlaybackState.device.id, contextUri);
+
+      // const spotifyPlaylistTracks: SpotifyPlaylistTrackObject[] = spotifyPlaylistItems.items;
+
+      // // add items to the queue
+      // const addItemPromises: Promise<any>[] = [];
+
+      // console.log('add tracks to queue');
+      // for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
+      //   addItemPromises.push(spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id));
+      // }
+      // console.log('track adds complete');
+      // Promise.all(addItemPromises)
+      //   .then((data: any) => {
+      //     console.log('track adds promises fulfilled');
+      //     console.log(data);
+
+      //     // skip to next track to start playlist playback 
+      //     return spotifyWebApi.skipToNextTrack(accessToken)
+      //   });
+    }).then((data: any) => {
+      return response.json(data);
     })
     .catch((err: Error) => {
       console.log(err);
       debugger;
     });
 }
-
 
 export function getPlaybackState(request: Request, response: Response): void {
 
@@ -137,15 +142,15 @@ export function getPlaybackState(request: Request, response: Response): void {
 
 }
 
-export function startPlayback(request: Request, response: Response) {
+export function resumePlayback(request: Request, response: Response) {
 
-  console.log('startPlayback invoked');
+  console.log('resumePlayback invoked');
 
   const accessToken = spotifyWebApi.getAccessToken();
-  const promise = spotifyWebApi.startPlayback(accessToken);
+  const promise = spotifyWebApi.resumePlayback(accessToken);
   promise
     .then((result: any) => {
-      console.log('startPlayback');
+      console.log('resumePlayback');
       console.log(result);
       response.sendStatus(200);
     })
