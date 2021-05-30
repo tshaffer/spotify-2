@@ -76,15 +76,20 @@ export function addPlaylistTracksToQueue(request: Request, response: Response) {
 
   const accessToken = spotifyWebApi.getAccessToken();
 
+  let spotifyPlaylistItems: SpotifyPlaylistItems;
+  let spotifyPlaybackState: SpotifyPlaybackState;
+
   const getPlaylistTracksPromise: Promise<any> = spotifyWebApi.getPlaylistTracks(accessToken, playlistId);
   getPlaylistTracksPromise
     .then((playlistTrackData: any) => {
       console.log('playlistTrackData');
       console.log(playlistTrackData);
+      spotifyPlaylistItems = playlistTrackData.body;
       return spotifyWebApi.getPlaybackState(accessToken);
     }).then((playbackStateData: any) => {
       console.log('playbackStateData');
       console.log(playbackStateData);
+      spotifyPlaybackState = playbackStateData.body;
       response.status(200);
     })
     .catch((err: Error) => {

@@ -70,16 +70,21 @@ export interface SpotifyPlaylistTracksRefObject {
   total: number;
 }
 
+// https://developer.spotify.com/documentation/web-api/reference/#category-player
 export interface SpotifyPlaybackState {
-  timestamp: number;
-  device: SpotifyDevice;
-  progress_ms: number;
-  is_playing: boolean;
-  currently_playing_type: string;
-  item: SpotifyTrackObject;
+  // ?? part of CurrentlyPlayingContextObject
+  // https://developer.spotify.com/documentation/web-api/reference/#object-currentlyplayingcontextobject
+  // https://developer.spotify.com/documentation/web-api/reference/#object-disallowsobject
+  actions?: any; 
   context: SpotifyPlaybackContext;
-  shuffle_state: boolean;
+  currently_playing_type: string;
+  device: SpotifyDevice;
+  is_playing: boolean;
+  item: SpotifyTrackObject;
+  progress_ms: number;
   repeat_state: boolean;
+  shuffle_state: boolean;
+  timestamp: number;
 }
 
 export interface SpotifyDevice {
