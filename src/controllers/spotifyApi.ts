@@ -90,7 +90,23 @@ export function addPlaylistTracksToQueue(request: Request, response: Response) {
       console.log('playbackStateData');
       console.log(playbackStateData);
       spotifyPlaybackState = playbackStateData.body;
-      response.status(200);
+
+      const spotifyPlaylistTracks: SpotifyPlaylistTrackObject[] = spotifyPlaylistItems.items;
+      
+      // add items to the queue - don't wait for responses
+      const addItemPromises: Promise<any>[]= [];
+
+      console.log('add tracks to queue');
+      for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
+        addItemPromises.push(spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id));
+      }
+      console.log('track adds complete');
+      Promise.all(addItemPromises)
+        .then( (data: any) => {
+          console.log('track adds promises fulfilled');
+          console.log(data);
+          response.status(200);
+        });
     })
     .catch((err: Error) => {
       console.log(err);
