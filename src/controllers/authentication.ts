@@ -60,7 +60,15 @@ export function authenticateCallbackHandler(request: Request, response: Response
     console.log(
       `Sucessfully retrieved access token. Expires in ${expires_in} s.`
     );
-    response.send('Success! You can now c±lose the window.');
+
+    let html: string = '<!DOCTYPE html>';
+    html += '<html>';
+    html += '<body>';
+    html += '<h1>Login successful</h1>';    
+    html += '<a href="http://localhost:8888/index.html#/">Home</a>';
+    html += '</body>';
+    html += '</html>';
+    response.send(html);
 
     setInterval(async () => {
       const refreshData = await spotifyWebApi.refreshAccessToken();
