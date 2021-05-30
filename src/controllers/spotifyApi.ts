@@ -105,7 +105,7 @@ export function addPlaylistTracksToQueue(request: Request, response: Response) {
         .then( (data: any) => {
           console.log('track adds promises fulfilled');
           console.log(data);
-          response.status(200);
+          return response.json(data);
         });
     })
     .catch((err: Error) => {
