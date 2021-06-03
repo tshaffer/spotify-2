@@ -85,14 +85,26 @@ export const addPlaylistTracksToQueue = async (request: Request, response: Respo
   const firstTrackUri = spotifyPlaylistTracks[0].track.uri;
   const secondTrackUri = spotifyPlaylistTracks[1].track.uri;
 
-  
-  for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
-    console.log('addItemToQueue: ' + spotifyPlaylistTrack.track.artists[0].name + ' ' + spotifyPlaylistTrack.track.name + ' ' + spotifyPlaylistTrack.track.uri);
-    await spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id);
+  console.log('add first track to queue: ' + spotifyPlaylistTracks[0].track.artists[0].name + ' ' + spotifyPlaylistTracks[0].track.name + ' ' + spotifyPlaylistTracks[0].track.uri);
+  await spotifyWebApi.addItemToQueue(accessToken, firstTrackUri, spotifyPlaybackState.device.id);
+
+  let itemUri = spotifyPlaybackState.item.uri;
+
+  while (itemUri !== firstTrackUri) {
+    console.log('skip track: ' + spotifyPlaybackState.context.uri);
+    await spotifyWebApi.skipToNextTrack(accessToken);
+    playbackStateData = await spotifyWebApi.getPlaybackState(accessToken);
+    spotifyPlaybackState = playbackStateData.body;
+    itemUri = spotifyPlaybackState.item.uri
   }
 
-  await spotifyWebApi.skipToNextTrack(accessToken);
-  
+  // for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
+  //   console.log('addItemToQueue: ' + spotifyPlaylistTrack.track.artists[0].name + ' ' + spotifyPlaylistTrack.track.name + ' ' + spotifyPlaylistTrack.track.uri);
+  //   await spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id);
+  // }
+
+  // await spotifyWebApi.skipToNextTrack(accessToken);
+
   // while (spotifyPlaybackState.context.uri !== firstTrackUri && spotifyPlaybackState.context.uri !== secondTrackUri) {
   //   console.log('skip track: ' + spotifyPlaybackState.context.uri);
   //   await spotifyWebApi.skipToNextTrack(accessToken);
