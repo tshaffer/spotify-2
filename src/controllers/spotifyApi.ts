@@ -83,10 +83,15 @@ export const addPlaylistTracksToQueue = async (request: Request, response: Respo
   console.log('deviceId: ' + spotifyPlaybackState.device.id);
 
   const firstTrackUri = spotifyPlaylistTracks[0].track.uri;
-  const secondTrackUri = spotifyPlaylistTracks[1].track.uri;
+  // const secondTrackUri = spotifyPlaylistTracks[1].track.uri;
 
-  console.log('add first track to queue: ' + spotifyPlaylistTracks[0].track.artists[0].name + ' ' + spotifyPlaylistTracks[0].track.name + ' ' + spotifyPlaylistTracks[0].track.uri);
-  await spotifyWebApi.addItemToQueue(accessToken, firstTrackUri, spotifyPlaybackState.device.id);
+  // console.log('add first track to queue: ' + spotifyPlaylistTracks[0].track.artists[0].name + ' ' + spotifyPlaylistTracks[0].track.name + ' ' + spotifyPlaylistTracks[0].track.uri);
+  // await spotifyWebApi.addItemToQueue(accessToken, firstTrackUri, spotifyPlaybackState.device.id);
+
+  for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
+    console.log('addItemToQueue: ' + spotifyPlaylistTrack.track.artists[0].name + ' ' + spotifyPlaylistTrack.track.name + ' ' + spotifyPlaylistTrack.track.uri);
+    await spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id);
+  }
 
   let itemUri = spotifyPlaybackState.item.uri;
 
