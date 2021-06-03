@@ -62,7 +62,7 @@ export function getPlaylistTracks(request: Request, response: Response) {
     });
 }
 
-export function   (request: Request, response: Response) {
+export function addPlaylistTracksToQueue (request: Request, response: Response) {
 
   console.log('addPlaylistTracksToQueue invoked');
 
