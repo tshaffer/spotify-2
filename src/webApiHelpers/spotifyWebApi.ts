@@ -170,7 +170,7 @@ export class SpotifyWebApi {
   }
 
   // https://developer.spotify.com/documentation/web-api/reference/#endpoint-get-playlists-tracks
-  getPlaylistTracks(accessToken: string, playlistId: string): Promise<any> {
+  async getPlaylistTracks(accessToken: string, playlistId: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -185,7 +185,7 @@ export class SpotifyWebApi {
     return swrExecute(spotifyWebRequest, httpManagerGet);
   }
 
-  getPlaybackState(accessToken: string): Promise<any> {
+  async getPlaybackState(accessToken: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -246,7 +246,7 @@ export class SpotifyWebApi {
     return swrExecute(spotifyWebRequest, httpManagerPut);
   }
 
-  skipToNextTrack(accessToken: string): Promise<any> {
+  async skipToNextTrack(accessToken: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
@@ -261,7 +261,7 @@ export class SpotifyWebApi {
     return swrExecute(spotifyWebRequest, httpManagerPost);
   }
 
-  addItemToQueue(accessToken: string, uri: string, deviceId: string): Promise<any> {
+  async addItemToQueue(accessToken: string, uri: string, deviceId: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
