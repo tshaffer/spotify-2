@@ -196,5 +196,40 @@ export function skipToNextTrack(request: Request, response: Response) {
       console.log(err);
       throw new Error(err.toString());
     });
+}
 
+export function skipToPreviousTrack(request: Request, response: Response) {
+
+  console.log('skipToPreviousTrack invoked');
+
+  const accessToken = spotifyWebApi.getAccessToken();
+  const promise = spotifyWebApi.skipToPreviousTrack(accessToken);
+  promise
+    .then((result: any) => {
+      console.log('skipToPreviousTrack');
+      console.log(result);
+      response.sendStatus(200);
+    })
+    .catch((err: Error) => {
+      console.log(err);
+      throw new Error(err.toString());
+    });
+}
+
+export function shufflePlayback(request: Request, response: Response) {
+
+  console.log('shufflePlayback invoked');
+
+  const accessToken = spotifyWebApi.getAccessToken();
+  const promise = spotifyWebApi.shufflePlayback(accessToken);
+  promise
+    .then((result: any) => {
+      console.log('shufflePlayback');
+      console.log(result);
+      response.sendStatus(200);
+    })
+    .catch((err: Error) => {
+      console.log(err);
+      throw new Error(err.toString());
+    });
 }

@@ -8,6 +8,8 @@ import {
   pausePlayback,
   skipToNextTrack,
   resumePlayback,
+  shufflePlayback,
+  skipToPreviousTrack,
 } from '../controllers';
 
 const spotifyApiRouter = express.Router();
@@ -19,6 +21,8 @@ spotifyApiRouter.get('/getPlaybackState', getPlaybackState);
 spotifyApiRouter.put('/pausePlayback', pausePlayback);
 spotifyApiRouter.put('/startPlayback', resumePlayback);
 spotifyApiRouter.post('/skipToNextTrack', skipToNextTrack);
+spotifyApiRouter.post('/skipToPreviousTrack', skipToPreviousTrack);
+spotifyApiRouter.post('/shufflePlayback', shufflePlayback);
 
 spotifyApiRouter.get('/addPlaylistTracksToQueue/:playlistId/contextUri/:contextUri', addPlaylistTracksToQueue);
 
