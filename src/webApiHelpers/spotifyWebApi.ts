@@ -200,6 +200,37 @@ export class SpotifyWebApi {
     return swrExecute(spotifyWebRequest, httpManagerGet);
   }
 
+  async getUsersDevices(accessToken: string): Promise<any> {
+
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/me/player/devices',
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      undefined,
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerGet);
+  }
+
+  async transferUsersPlayback(accessToken: string, deviceId: string): Promise<any> {
+    const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
+      'api.spotify.com',
+      spotifyApiConfiguration.DEFAULT_PORT,
+      spotifyApiConfiguration.DEFAULT_SCHEME,
+      '/v1/me/player',
+      { Authorization: 'Bearer ' + accessToken },
+      undefined,
+      {
+        device_ids: [deviceId],
+      },
+    );
+
+    return swrExecute(spotifyWebRequest, httpManagerPut);
+  }
+
   startPlayback(accessToken: string, deviceId: string, contextUri: string): Promise<any> {
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',

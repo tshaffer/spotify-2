@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { SpotifyPlaylistItems, SpotifyPlaylists, SpotifyPlaylistTrackObject, SpotifyPlaybackState } from 'spotifyApi';
 
 // TEDTODO - really ugly
@@ -73,17 +73,28 @@ export const addPlaylistTracksToQueue = async (request: Request, response: Respo
 
   const accessToken = spotifyWebApi.getAccessToken();
 
-
   const playlistTrackData: any = await spotifyWebApi.getPlaylistTracks(accessToken, playlistId);
   const spotifyPlaylistItems: SpotifyPlaylistItems = playlistTrackData.body;
   const spotifyPlaylistTracks: SpotifyPlaylistTrackObject[] = spotifyPlaylistItems.items;
 
   let playbackStateData: any = await spotifyWebApi.getPlaybackState(accessToken);
   let spotifyPlaybackState: SpotifyPlaybackState = playbackStateData.body;
+
+  if (isEmpty(spotifyPlaybackState)) {
+    // TEDTODO - fail blog !!
+    const usersDevices: any = await spotifyWebApi.getUsersDevices(accessToken);
+    console.log(usersDevices);
+    const transferUsersPlaybackResult = await spotifyWebApi.transferUsersPlayback(accessToken, '241efedf232678dd637fd43619cac7b931c69fcb');
+    console.log('transferUsersPlayback result: ' + transferUsersPlaybackResult);
+  }
+
   console.log('deviceId: ' + spotifyPlaybackState.device.id);
+
 
   const firstTrackUri = spotifyPlaylistTracks[0].track.uri;
   // const secondTrackUri = spotifyPlaylistTracks[1].track.uri;
+
+  // await spotifyWebApi.addItemToQueue(accessToken, contextUri, spotifyPlaybackState.device.id);
 
   // console.log('add first track to queue: ' + spotifyPlaylistTracks[0].track.artists[0].name + ' ' + spotifyPlaylistTracks[0].track.name + ' ' + spotifyPlaylistTracks[0].track.uri);
   // await spotifyWebApi.addItemToQueue(accessToken, firstTrackUri, spotifyPlaybackState.device.id);
