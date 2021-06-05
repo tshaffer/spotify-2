@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { isArray, isEmpty, isNil } from 'lodash';
+import { isNil } from 'lodash';
 import { SpotifyPlaylistItems, SpotifyPlaylists, SpotifyPlaylistTrackObject, SpotifyPlaybackState } from 'spotifyApi';
 
 // TEDTODO - really ugly
@@ -80,36 +80,25 @@ export const addPlaylistTracksToQueue = async (request: Request, response: Respo
   let playbackStateData: any = await spotifyWebApi.getPlaybackState(accessToken);
   let spotifyPlaybackState: SpotifyPlaybackState = playbackStateData.body;
 
-  // if (isEmpty(spotifyPlaybackState)) {
-  // TEDTODO - fail blog !!
-  let deviceId: string;
-
-  const usersDevices: any = await spotifyWebApi.getUsersDevices(accessToken);
-  if (!isNil(usersDevices) && !isNil(usersDevices.body) && isArray(usersDevices.body.devices)) {
-    for (const device of usersDevices.body.devices) {
-      if (device.type === 'Computer') {
-        deviceId = device.id;
-        const transferUsersPlaybackResult = await spotifyWebApi.transferUsersPlayback(accessToken, deviceId);
-        console.log('transferUsersPlayback result: ' + transferUsersPlaybackResult);
-      }
-    }
-  } else {
-    deviceId = spotifyPlaybackState.device.id;
-  }
-  // console.log(usersDevices);
-  // const transferUsersPlaybackResult = await spotifyWebApi.transferUsersPlayback(accessToken, '241efedf232678dd637fd43619cac7b931c69fcb');
-  // console.log('transferUsersPlayback result: ' + transferUsersPlaybackResult);
+  // TEDTDOO - check for no devices in playbackState.
+  // let deviceId: string;
+  // const usersDevices: any = await spotifyWebApi.getUsersDevices(accessToken);
+  // if (!isNil(usersDevices) && !isNil(usersDevices.body) && isArray(usersDevices.body.devices)) {
+  //   for (const device of usersDevices.body.devices) {
+  //     if (device.type === 'Computer') {
+  //       deviceId = device.id;
+  //       const transferUsersPlaybackResult = await spotifyWebApi.transferUsersPlayback(accessToken, deviceId);
+  //       console.log('transferUsersPlayback result: ' + transferUsersPlaybackResult);
+  //     }
+  //   }
+  // } else {
+  //   deviceId = spotifyPlaybackState.device.id;
   // }
 
+  const deviceId = spotifyPlaybackState.device.id;
   console.log('deviceId: ' + deviceId);
 
   const firstTrackUri = spotifyPlaylistTracks[0].track.uri;
-  // const secondTrackUri = spotifyPlaylistTracks[1].track.uri;
-
-  // await spotifyWebApi.addItemToQueue(accessToken, contextUri, spotifyPlaybackState.device.id);
-
-  // console.log('add first track to queue: ' + spotifyPlaylistTracks[0].track.artists[0].name + ' ' + spotifyPlaylistTracks[0].track.name + ' ' + spotifyPlaylistTracks[0].track.uri);
-  // await spotifyWebApi.addItemToQueue(accessToken, firstTrackUri, spotifyPlaybackState.device.id);
 
   for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
     console.log('addItemToQueue: ' + spotifyPlaylistTrack.track.artists[0].name + ' ' + spotifyPlaylistTrack.track.name + ' ' + spotifyPlaylistTrack.track.uri);
@@ -126,66 +115,9 @@ export const addPlaylistTracksToQueue = async (request: Request, response: Respo
     itemUri = spotifyPlaybackState.item.uri
   }
 
-  // for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
-  //   console.log('addItemToQueue: ' + spotifyPlaylistTrack.track.artists[0].name + ' ' + spotifyPlaylistTrack.track.name + ' ' + spotifyPlaylistTrack.track.uri);
-  //   await spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id);
-  // }
-
-  // await spotifyWebApi.skipToNextTrack(accessToken);
-
-  // while (spotifyPlaybackState.context.uri !== firstTrackUri && spotifyPlaybackState.context.uri !== secondTrackUri) {
-  //   console.log('skip track: ' + spotifyPlaybackState.context.uri);
-  //   await spotifyWebApi.skipToNextTrack(accessToken);
-  //   playbackStateData = await spotifyWebApi.getPlaybackState(accessToken);
-  //   spotifyPlaybackState = playbackStateData.body;  
-  // }
-
   console.log('found it');
 
   return response.json(spotifyPlaybackState);
-
-  // const getPlaylistTracksPromise: Promise<any> = spotifyWebApi.getPlaylistTracks(accessToken, playlistId);
-  // getPlaylistTracksPromise
-  //   .then((playlistTrackData: any) => {
-  //     console.log('playlistTrackData');
-  //     console.log(playlistTrackData);
-  //     spotifyPlaylistItems = playlistTrackData.body;
-  //     return spotifyWebApi.getPlaybackState(accessToken);
-  //   }).then((playbackStateData: any) => {
-  //     console.log('playbackStateData');
-  //     console.log(playbackStateData);
-  //     spotifyPlaybackState = playbackStateData.body;
-
-  //     console.log('Device Id:');
-  //     console.log(spotifyPlaybackState.device.id);
-
-  //     return spotifyWebApi.startPlayback(accessToken, spotifyPlaybackState.device.id, contextUri);
-
-  //     // const spotifyPlaylistTracks: SpotifyPlaylistTrackObject[] = spotifyPlaylistItems.items;
-
-  //     // // add items to the queue
-  //     // const addItemPromises: Promise<any>[] = [];
-
-  //     // console.log('add tracks to queue');
-  //     // for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
-  //     //   addItemPromises.push(spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id));
-  //     // }
-  //     // console.log('track adds complete');
-  //     // Promise.all(addItemPromises)
-  //     //   .then((data: any) => {
-  //     //     console.log('track adds promises fulfilled');
-  //     //     console.log(data);
-
-  //     //     // skip to next track to start playlist playback 
-  //     //     return spotifyWebApi.skipToNextTrack(accessToken)
-  //     //   });
-  //   }).then((data: any) => {
-  //     return response.json(data);
-  //   })
-  //   .catch((err: Error) => {
-  //     console.log(err);
-  //     debugger;
-  //   });
 }
 
 export function getPlaybackState(request: Request, response: Response): void {
