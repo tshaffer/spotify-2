@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { isEmpty, isNil } from 'lodash';
+import { isArray, isEmpty, isNil } from 'lodash';
 import { SpotifyPlaylistItems, SpotifyPlaylists, SpotifyPlaylistTrackObject, SpotifyPlaybackState } from 'spotifyApi';
 
 // TEDTODO - really ugly
@@ -80,16 +80,28 @@ export const addPlaylistTracksToQueue = async (request: Request, response: Respo
   let playbackStateData: any = await spotifyWebApi.getPlaybackState(accessToken);
   let spotifyPlaybackState: SpotifyPlaybackState = playbackStateData.body;
 
-  if (isEmpty(spotifyPlaybackState)) {
-    // TEDTODO - fail blog !!
-    const usersDevices: any = await spotifyWebApi.getUsersDevices(accessToken);
-    console.log(usersDevices);
-    const transferUsersPlaybackResult = await spotifyWebApi.transferUsersPlayback(accessToken, '241efedf232678dd637fd43619cac7b931c69fcb');
-    console.log('transferUsersPlayback result: ' + transferUsersPlaybackResult);
+  // if (isEmpty(spotifyPlaybackState)) {
+  // TEDTODO - fail blog !!
+  let deviceId: string;
+
+  const usersDevices: any = await spotifyWebApi.getUsersDevices(accessToken);
+  if (!isNil(usersDevices) && !isNil(usersDevices.body) && isArray(usersDevices.body.devices)) {
+    for (const device of usersDevices.body.devices) {
+      if (device.type === 'Computer') {
+        deviceId = device.id;
+        const transferUsersPlaybackResult = await spotifyWebApi.transferUsersPlayback(accessToken, deviceId);
+        console.log('transferUsersPlayback result: ' + transferUsersPlaybackResult);
+      }
+    }
+  } else {
+    deviceId = spotifyPlaybackState.device.id;
   }
+  // console.log(usersDevices);
+  // const transferUsersPlaybackResult = await spotifyWebApi.transferUsersPlayback(accessToken, '241efedf232678dd637fd43619cac7b931c69fcb');
+  // console.log('transferUsersPlayback result: ' + transferUsersPlaybackResult);
+  // }
 
-  console.log('deviceId: ' + spotifyPlaybackState.device.id);
-
+  console.log('deviceId: ' + deviceId);
 
   const firstTrackUri = spotifyPlaylistTracks[0].track.uri;
   // const secondTrackUri = spotifyPlaylistTracks[1].track.uri;
@@ -101,7 +113,7 @@ export const addPlaylistTracksToQueue = async (request: Request, response: Respo
 
   for (const spotifyPlaylistTrack of spotifyPlaylistTracks) {
     console.log('addItemToQueue: ' + spotifyPlaylistTrack.track.artists[0].name + ' ' + spotifyPlaylistTrack.track.name + ' ' + spotifyPlaylistTrack.track.uri);
-    await spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, spotifyPlaybackState.device.id);
+    await spotifyWebApi.addItemToQueue(accessToken, spotifyPlaylistTrack.track.uri, deviceId);
   }
 
   let itemUri = spotifyPlaybackState.item.uri;
