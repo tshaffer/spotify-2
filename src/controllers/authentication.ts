@@ -64,8 +64,10 @@ export function authenticateCallbackHandler(request: Request, response: Response
     let html: string = '<!DOCTYPE html>';
     html += '<html>';
     html += '<body>';
+    html += '<div style="text-align:center">';
     html += '<h1>Login successful</h1>';    
     html += '<a href="http://localhost:8888/index.html#/">Home</a>';
+    html += '</div>';
     html += '</body>';
     html += '</html>';
     response.send(html);
