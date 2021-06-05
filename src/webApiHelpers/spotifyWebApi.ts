@@ -307,19 +307,19 @@ export class SpotifyWebApi {
     return swrExecute(spotifyWebRequest, httpManagerPost);
   }
 
-  async shufflePlayback(accessToken: string): Promise<any> {
+  async shufflePlayback(accessToken: string, shuffleState: string): Promise<any> {
 
     const spotifyWebRequest: SpotifyWebRequest = swrCreateSpotifyWebRequest(
       'api.spotify.com',
       spotifyApiConfiguration.DEFAULT_PORT,
       spotifyApiConfiguration.DEFAULT_SCHEME,
-      '/v1/me/player/shuffle',
+      '/v1/me/player/shuffle?state=' + shuffleState,
       { Authorization: 'Bearer ' + accessToken },
       undefined,
       undefined,
     );
 
-    return swrExecute(spotifyWebRequest, httpManagerPost);
+    return swrExecute(spotifyWebRequest, httpManagerPut);
   }
 
   async addItemToQueue(accessToken: string, uri: string, deviceId: string): Promise<any> {

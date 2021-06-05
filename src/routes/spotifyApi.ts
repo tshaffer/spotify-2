@@ -22,7 +22,7 @@ spotifyApiRouter.put('/pausePlayback', pausePlayback);
 spotifyApiRouter.put('/startPlayback', resumePlayback);
 spotifyApiRouter.post('/skipToNextTrack', skipToNextTrack);
 spotifyApiRouter.post('/skipToPreviousTrack', skipToPreviousTrack);
-spotifyApiRouter.post('/shufflePlayback', shufflePlayback);
+spotifyApiRouter.post('/shufflePlayback/:shuffleState', shufflePlayback);
 
 spotifyApiRouter.get('/addPlaylistTracksToQueue/:playlistId/contextUri/:contextUri', addPlaylistTracksToQueue);
 

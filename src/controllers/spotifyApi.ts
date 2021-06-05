@@ -220,8 +220,10 @@ export function shufflePlayback(request: Request, response: Response) {
 
   console.log('shufflePlayback invoked');
 
+  const { shuffleState } = request.params;
+
   const accessToken = spotifyWebApi.getAccessToken();
-  const promise = spotifyWebApi.shufflePlayback(accessToken);
+  const promise = spotifyWebApi.shufflePlayback(accessToken, shuffleState);
   promise
     .then((result: any) => {
       console.log('shufflePlayback');
